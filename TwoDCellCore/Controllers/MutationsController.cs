@@ -63,34 +63,34 @@ namespace TwoDCellCore.Controllers
 
         // PUT: api/Mutations/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutMutation(string id, Mutation mutation)
-        {
-            if (id != mutation.MutationId)
-            {
-                return BadRequest();
-            }
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> PutMutation(string id, Mutation mutation)
+        //{
+        //    if (id != mutation.MutationId)
+        //    {
+        //        return BadRequest();
+        //    }
 
-            _context.Entry(mutation).State = EntityState.Modified;
+        //    _context.Entry(mutation).State = EntityState.Modified;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!MutationExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!MutationExists(id))
+        //        {
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
 
         // POST: api/Mutations
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -118,20 +118,20 @@ namespace TwoDCellCore.Controllers
         }
 
         // DELETE: api/Mutations/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteMutation(string id)
-        {
-            var mutation = await _context.Mutations.FindAsync(id);
-            if (mutation == null)
-            {
-                return NotFound();
-            }
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteMutation(string id)
+        //{
+        //    var mutation = await _context.Mutations.FindAsync(id);
+        //    if (mutation == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            _context.Mutations.Remove(mutation);
-            await _context.SaveChangesAsync();
+        //    _context.Mutations.Remove(mutation);
+        //    await _context.SaveChangesAsync();
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
 
         private bool MutationExists(string id)
         {
