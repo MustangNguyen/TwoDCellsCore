@@ -1,0 +1,6 @@
+@TwoDCellCore_HostAddress = http://localhost:5168
+
+GET {{TwoDCellCore_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
