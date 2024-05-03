@@ -19,7 +19,6 @@ public partial class User
     [StringLength(30)]
     public string UserName { get; set; } = null!;
 
-    [JsonIgnore]
     [Column("password")]
     [StringLength(18)]
     public string Password { get; set; } = null!;

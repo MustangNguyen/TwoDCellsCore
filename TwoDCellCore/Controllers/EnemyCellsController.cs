@@ -33,6 +33,7 @@ namespace TwoDCellCore.Controllers
                 cell.FactionId = cell.FactionId.Trim();
                 cell.AbilityId = cell.AbilityId?.Trim();
                 cell.ShieldType  = cell.ShieldType.Trim();
+                cell.Equipment = cell.Equipment.Trim();
             }
             return cells;
         }
