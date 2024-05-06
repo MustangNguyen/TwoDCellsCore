@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace TwoDCellCore.Models;
@@ -24,9 +25,11 @@ public partial class UserMutation
     [Column("mutationiXp")]
     public int MutationiXp { get; set; }
 
+    [JsonIgnore]
     [ForeignKey("MutationId")]
     public virtual Mutation Mutation { get; set; } = null!;
 
+    [JsonIgnore]
     [ForeignKey("UserId")]
     public virtual User User { get; set; } = null!;
 }

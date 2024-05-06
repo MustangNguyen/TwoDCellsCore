@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace TwoDCellCore.Models;
@@ -24,9 +25,11 @@ public partial class UserGun
     [Column("gunXp")]
     public int GunXp { get; set; }
 
+    [JsonIgnore]
     [ForeignKey("GunId")]
     public virtual Gun Gun { get; set; } = null!;
 
+    [JsonIgnore]
     [ForeignKey("UserId")]
     public virtual User User { get; set; } = null!;
 }
