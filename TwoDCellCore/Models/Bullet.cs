@@ -36,11 +36,10 @@ public partial class Bullet
     [StringLength(20)]
     public string Element { get; set; } = null!;
 
-    [JsonIgnore]
     [ForeignKey("BulletTypeId")]
     [InverseProperty("Bullets")]
     public virtual BulletType BulletType { get; set; } = null!;
-    
+
     [JsonIgnore]
     [ForeignKey("Element")]
     [InverseProperty("Bullets")]
