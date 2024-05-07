@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace TwoDCellCore.Models;
@@ -34,6 +35,7 @@ public partial class Gun
     [Column("criticalMultiple")]
     public double CriticalMultiple { get; set; }
 
+    [JsonIgnore]
     [ForeignKey("BulletId")]
     [InverseProperty("Guns")]
     public virtual Bullet Bullet { get; set; } = null!;

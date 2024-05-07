@@ -6,10 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace TwoDCellCore.Models;
 
-[Keyless]
+
 [Table("mutation_upgrade_config")]
 public partial class MutationUpgradeConfig
 {
+    [Key]
     [Column("mutationLv")]
     public int MutationLv { get; set; }
 

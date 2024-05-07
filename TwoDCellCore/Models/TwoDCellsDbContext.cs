@@ -86,6 +86,7 @@ public partial class TwoDCellsDbContext : DbContext
             entity.Property(e => e.AbilityId).IsFixedLength();
             entity.Property(e => e.CellProtection).IsFixedLength();
             entity.Property(e => e.EnemyName).IsFixedLength();
+            entity.Property(e => e.Equipment).IsFixedLength();
             entity.Property(e => e.FactionId).IsFixedLength();
             entity.Property(e => e.ShieldType).IsFixedLength();
 

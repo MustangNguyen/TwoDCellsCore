@@ -43,8 +43,9 @@ public partial class EnemyCell
     public string ShieldType { get; set; } = null!;
 
     public int Shield { get; set; }
+
     [StringLength(10)]
-    public string Equipment { get; set; }
+    public string Equipment { get; set; } = null!;
 
     [JsonIgnore]
     [ForeignKey("AbilityId")]
