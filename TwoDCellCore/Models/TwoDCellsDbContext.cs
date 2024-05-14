@@ -41,9 +41,9 @@ public partial class TwoDCellsDbContext : DbContext
 
     public virtual DbSet<UserMutation> UserMutations { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=desktop-tdol60o\\SQLEXPRESS;Initial Catalog=TWODCELL;Integrated Security=True;Encrypt=True;Trust Server Certificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+//    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
+//        => optionsBuilder.UseSqlServer("Data Source=twodcellcoredbserver.database.windows.net;Initial Catalog=TWODCELL;Persist Security Info=True;User ID=Mustang;Password=RaijigenkiZ1223#1");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -89,6 +89,7 @@ public partial class TwoDCellsDbContext : DbContext
             entity.Property(e => e.Equipment).IsFixedLength();
             entity.Property(e => e.FactionId).IsFixedLength();
             entity.Property(e => e.ShieldType).IsFixedLength();
+            entity.Property(e => e.BodyDamage).IsFixedLength();
 
             entity.HasOne(d => d.Ability).WithMany(p => p.EnemyCells).HasConstraintName("FK_enemy_cells_mutation_abilities");
 

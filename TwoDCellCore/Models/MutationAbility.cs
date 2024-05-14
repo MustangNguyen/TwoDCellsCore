@@ -18,6 +18,7 @@ public partial class MutationAbility
     [StringLength(50)]
     public string AbilityName { get; set; } = null!;
 
+    [JsonIgnore]
     [Column("MutationID")]
     [StringLength(10)]
     public string? MutationId { get; set; }
