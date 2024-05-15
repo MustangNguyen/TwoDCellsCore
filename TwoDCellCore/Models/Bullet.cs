@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 namespace TwoDCellCore.Models;
 
 [Table("bullets")]
+[Index("BulletTypeId", Name = "IX_bullets_bulletTypeID")]
+[Index("Element", Name = "IX_bullets_element")]
 public partial class Bullet
 {
     [Key]
@@ -36,6 +38,7 @@ public partial class Bullet
     [StringLength(20)]
     public string Element { get; set; } = null!;
 
+    [JsonIgnore]
     [ForeignKey("BulletTypeId")]
     [InverseProperty("Bullets")]
     public virtual BulletType BulletType { get; set; } = null!;

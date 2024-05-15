@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 namespace TwoDCellCore.Models;
 
 [Table("enemy_cells")]
+[Index("AbilityId", Name = "IX_enemy_cells_AbilityID")]
+[Index("FactionId", Name = "IX_enemy_cells_factionID")]
 public partial class EnemyCell
 {
     [Key]

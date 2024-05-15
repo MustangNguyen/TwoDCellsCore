@@ -9,11 +9,12 @@ namespace TwoDCellCore.Models;
 
 [Keyless]
 [Table("user_mutation")]
+[Index("MutationId", Name = "IX_user_mutation_MutationID")]
+[Index("Id", Name = "IX_user_mutation_userID")]
 public partial class UserMutation
 {
-    [Column("userID")]
-    [StringLength(30)]
-    public string UserId { get; set; } = null!;
+    [Column("id")]
+    public string Id { get; set; } = null!;
 
     [Column("MutationID")]
     [StringLength(10)]
@@ -26,10 +27,10 @@ public partial class UserMutation
     public int MutationiXp { get; set; }
 
     [JsonIgnore]
-    [ForeignKey("MutationId")]
-    public virtual Mutation Mutation { get; set; } = null!;
+    [ForeignKey("Id")]
+    public virtual AspNetUser IdNavigation { get; set; } = null!;
 
     [JsonIgnore]
-    [ForeignKey("UserId")]
-    public virtual User User { get; set; } = null!;
+    [ForeignKey("MutationId")]
+    public virtual Mutation Mutation { get; set; } = null!;
 }

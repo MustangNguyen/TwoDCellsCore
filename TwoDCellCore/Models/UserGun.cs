@@ -9,11 +9,12 @@ namespace TwoDCellCore.Models;
 
 [Keyless]
 [Table("user_gun")]
+[Index("GunId", Name = "IX_user_gun_gunID")]
+[Index("Id", Name = "IX_user_gun_userID")]
 public partial class UserGun
 {
-    [Column("userID")]
-    [StringLength(30)]
-    public string UserId { get; set; } = null!;
+    [Column("id")]
+    public string Id { get; set; } = null!;
 
     [Column("gunID")]
     [StringLength(10)]
@@ -30,6 +31,6 @@ public partial class UserGun
     public virtual Gun Gun { get; set; } = null!;
 
     [JsonIgnore]
-    [ForeignKey("UserId")]
-    public virtual User User { get; set; } = null!;
+    [ForeignKey("Id")]
+    public virtual AspNetUser IdNavigation { get; set; } = null!;
 }

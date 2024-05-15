@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Configuration;
 using TwoDCellCore.Models;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,9 +11,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddAuthorization();
 builder.Services.AddSwaggerGen();
+builder.Services.AddIdentityApiEndpoints<IdentityUser>().AddEntityFrameworkStores<TwoDCellsDbContext>();
 builder.Services.AddDbContext<TwoDCellsDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("TwoDCellDatabase")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("TwoDCellDatabaseLocal")));
 
 var app = builder.Build();
 
@@ -22,6 +25,8 @@ var app = builder.Build();
     app.UseSwagger();
     app.UseSwaggerUI();
 //}
+
+app.MapGroup("/idenity").MapIdentityApi<IdentityUser>();
 
 app.UseHttpsRedirection();
 

@@ -8,18 +8,19 @@ using Microsoft.EntityFrameworkCore;
 namespace TwoDCellCore.Models;
 
 [Table("mutations")]
+[Index("FactionId", Name = "IX_mutations_factionID")]
 public partial class Mutation
 {
+    [Key]
+    [Column("MutationID")]
+    [StringLength(10)]
+    public string MutationId { get; set; } = null!;
+
     [Column("HP")]
     public int Hp { get; set; }
 
     [Column("MP")]
     public int Mp { get; set; }
-
-    [Key]
-    [Column("MutationID")]
-    [StringLength(10)]
-    public string MutationId { get; set; } = null!;
 
     [StringLength(50)]
     public string MutationName { get; set; } = null!;

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace TwoDCellCore.Models;
 
 [Table("guns")]
+[Index("BulletId", Name = "IX_guns_bulletID")]
 public partial class Gun
 {
     [Key]

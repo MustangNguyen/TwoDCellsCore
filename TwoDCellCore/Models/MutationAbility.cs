@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace TwoDCellCore.Models;
 
 [Table("mutation_abilities")]
+[Index("MutationId", Name = "IX_mutation_abilities_MutationID")]
 public partial class MutationAbility
 {
     [Key]
@@ -18,7 +19,6 @@ public partial class MutationAbility
     [StringLength(50)]
     public string AbilityName { get; set; } = null!;
 
-    [JsonIgnore]
     [Column("MutationID")]
     [StringLength(10)]
     public string? MutationId { get; set; }
