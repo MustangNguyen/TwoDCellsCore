@@ -12,7 +12,7 @@ using TwoDCellCore.Models;
 namespace TwoDCellCore.Migrations
 {
     [DbContext(typeof(TwoDCellsDbContext))]
-    [Migration("20240516030542_initial")]
+    [Migration("20240516083459_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -266,9 +266,9 @@ namespace TwoDCellCore.Migrations
 
                     b.HasKey("BulletId");
 
-                    b.HasIndex("BulletTypeId");
+                    b.HasIndex(new[] { "BulletTypeId" }, "IX_bullets_bulletTypeID");
 
-                    b.HasIndex("Element");
+                    b.HasIndex(new[] { "Element" }, "IX_bullets_element");
 
                     b.ToTable("bullets");
                 });
@@ -344,8 +344,7 @@ namespace TwoDCellCore.Migrations
                         .HasColumnType("int");
 
                     b.Property<int?>("BodyDamage")
-                        .HasColumnType("int")
-                        .IsFixedLength();
+                        .HasColumnType("int");
 
                     b.Property<string>("CellProtection")
                         .IsRequired()
@@ -394,9 +393,9 @@ namespace TwoDCellCore.Migrations
 
                     b.HasKey("EnemyId");
 
-                    b.HasIndex("AbilityId");
+                    b.HasIndex(new[] { "AbilityId" }, "IX_enemy_cells_AbilityID");
 
-                    b.HasIndex("FactionId");
+                    b.HasIndex(new[] { "FactionId" }, "IX_enemy_cells_factionID");
 
                     b.ToTable("enemy_cells");
                 });
@@ -441,7 +440,7 @@ namespace TwoDCellCore.Migrations
 
                     b.HasKey("GunId");
 
-                    b.HasIndex("BulletId");
+                    b.HasIndex(new[] { "BulletId" }, "IX_guns_bulletID");
 
                     b.ToTable("guns");
                 });
@@ -517,7 +516,7 @@ namespace TwoDCellCore.Migrations
                     b.HasKey("MutationId")
                         .HasName("PK_Test_Table1");
 
-                    b.HasIndex("FactionId");
+                    b.HasIndex(new[] { "FactionId" }, "IX_mutations_factionID");
 
                     b.ToTable("mutations");
                 });
@@ -544,7 +543,7 @@ namespace TwoDCellCore.Migrations
 
                     b.HasKey("AbilityId");
 
-                    b.HasIndex("MutationId");
+                    b.HasIndex(new[] { "MutationId" }, "IX_mutation_abilities_MutationID");
 
                     b.ToTable("mutation_abilities");
                 });
@@ -570,10 +569,8 @@ namespace TwoDCellCore.Migrations
             modelBuilder.Entity("TwoDCellCore.Models.User", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasMaxLength(30)
-                        .HasColumnType("nchar(30)")
-                        .HasColumnName("userID")
-                        .IsFixedLength();
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("userID");
 
                     b.Property<long>("Credit")
                         .HasColumnType("bigint")
@@ -617,14 +614,12 @@ namespace TwoDCellCore.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nchar(30)")
-                        .HasColumnName("userID")
-                        .IsFixedLength();
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("userID");
 
-                    b.HasIndex("GunId");
+                    b.HasIndex(new[] { "GunId" }, "IX_user_gun_gunID");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex(new[] { "UserId" }, "IX_user_gun_userID");
 
                     b.ToTable("user_gun");
                 });
@@ -648,14 +643,12 @@ namespace TwoDCellCore.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nchar(30)")
-                        .HasColumnName("userID")
-                        .IsFixedLength();
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("userID");
 
-                    b.HasIndex("MutationId");
+                    b.HasIndex(new[] { "MutationId" }, "IX_user_mutation_MutationID");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex(new[] { "UserId" }, "IX_user_mutation_userID");
 
                     b.ToTable("user_mutation");
                 });
@@ -788,7 +781,13 @@ namespace TwoDCellCore.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_user_gun_guns");
 
-                    b.HasOne("TwoDCellCore.Models.User", "User")
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .IsRequired()
+                        .HasConstraintName("FK_user_gun_AspNetUsers");
+
+                    b.HasOne("TwoDCellCore.Models.User", "UserNavigation")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .IsRequired()
@@ -797,6 +796,8 @@ namespace TwoDCellCore.Migrations
                     b.Navigation("Gun");
 
                     b.Navigation("User");
+
+                    b.Navigation("UserNavigation");
                 });
 
             modelBuilder.Entity("TwoDCellCore.Models.UserMutation", b =>
@@ -807,7 +808,13 @@ namespace TwoDCellCore.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_user_mutation_mutations");
 
-                    b.HasOne("TwoDCellCore.Models.User", "User")
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .IsRequired()
+                        .HasConstraintName("FK_user_mutation_AspNetUsers");
+
+                    b.HasOne("TwoDCellCore.Models.User", "UserNavigation")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .IsRequired()
@@ -816,6 +823,8 @@ namespace TwoDCellCore.Migrations
                     b.Navigation("Mutation");
 
                     b.Navigation("User");
+
+                    b.Navigation("UserNavigation");
                 });
 
             modelBuilder.Entity("TwoDCellCore.Models.Bullet", b =>
