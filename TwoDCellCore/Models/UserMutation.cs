@@ -9,29 +9,25 @@ namespace TwoDCellCore.Models;
 
 [Keyless]
 [Table("user_mutation")]
-[Index("MutationId", Name = "IX_user_mutation_MutationID")]
-[Index("UserId", Name = "IX_user_mutation_userID")]
 public partial class UserMutation
 {
     [Column("userID")]
+    [StringLength(450)]
     public string UserId { get; set; } = null!;
 
-    [Column("MutationID")]
+    [Column("mutationID")]
     [StringLength(10)]
     public string MutationId { get; set; } = null!;
 
     [Column("mutationLv")]
     public int MutationLv { get; set; }
 
-    [Column("mutationiXp")]
-    public int MutationiXp { get; set; }
+    [Column("mutationXp")]
+    public int MutationXp { get; set; }
 
     [ForeignKey("MutationId")]
     public virtual Mutation Mutation { get; set; } = null!;
 
     [ForeignKey("UserId")]
     public virtual IdentityUser User { get; set; } = null!;
-
-    [ForeignKey("UserId")]
-    public virtual User UserNavigation { get; set; } = null!;
 }

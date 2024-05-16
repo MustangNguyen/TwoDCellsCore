@@ -16,7 +16,7 @@ public partial class TwoDCellsDbContext : IdentityDbContext
     {
     }
 
-   
+
 
     public virtual DbSet<Bullet> Bullets { get; set; }
 
@@ -38,8 +38,6 @@ public partial class TwoDCellsDbContext : IdentityDbContext
 
     public virtual DbSet<MutationUpgradeConfig> MutationUpgradeConfigs { get; set; }
 
-    public virtual DbSet<User> Users { get; set; }
-
     public virtual DbSet<UserGun> UserGuns { get; set; }
 
     public virtual DbSet<UserMutation> UserMutations { get; set; }
@@ -48,7 +46,6 @@ public partial class TwoDCellsDbContext : IdentityDbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
         modelBuilder.Entity<Bullet>(entity =>
         {
             entity.Property(e => e.BulletId).IsFixedLength();
@@ -110,6 +107,13 @@ public partial class TwoDCellsDbContext : IdentityDbContext
                 .HasConstraintName("FK_guns_bullets");
         });
 
+        modelBuilder.Entity<GunUpgradeConfig>(entity =>
+        {
+            entity.HasKey(e => e.MutationLv).HasName("PK__gun_upgr__3133F2595884267F");
+
+            entity.Property(e => e.MutationLv).ValueGeneratedNever();
+        });
+
         modelBuilder.Entity<Mutation>(entity =>
         {
             entity.HasKey(e => e.MutationId).HasName("PK_Test_Table1");
@@ -134,10 +138,11 @@ public partial class TwoDCellsDbContext : IdentityDbContext
             entity.HasOne(d => d.Mutation).WithMany(p => p.MutationAbilities).HasConstraintName("FK_mutation_abilities_mutations");
         });
 
-        modelBuilder.Entity<User>(entity =>
+        modelBuilder.Entity<MutationUpgradeConfig>(entity =>
         {
-            entity.Property(e => e.Password).IsFixedLength();
-            entity.Property(e => e.UserName).IsFixedLength();
+            entity.HasKey(e => e.MutationLv).HasName("PK__mutation__3133F259C7CDCB68");
+
+            entity.Property(e => e.MutationLv).ValueGeneratedNever();
         });
 
         modelBuilder.Entity<UserGun>(entity =>
@@ -151,10 +156,6 @@ public partial class TwoDCellsDbContext : IdentityDbContext
             entity.HasOne(d => d.User).WithMany()
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_user_gun_AspNetUsers");
-
-            entity.HasOne(d => d.UserNavigation).WithMany()
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_user_gun_users");
         });
 
         modelBuilder.Entity<UserMutation>(entity =>
@@ -168,10 +169,6 @@ public partial class TwoDCellsDbContext : IdentityDbContext
             entity.HasOne(d => d.User).WithMany()
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_user_mutation_AspNetUsers");
-
-            entity.HasOne(d => d.UserNavigation).WithMany()
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_user_mutation_users");
         });
 
         OnModelCreatingPartial(modelBuilder);

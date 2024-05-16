@@ -14,5 +14,5 @@ public partial class MutationUpgradeConfig
     public int MutationLv { get; set; }
 
     [Column("xpRequire")]
-    public int XpRequire { get; set; }
+    public int? XpRequire { get; set; }
 }
