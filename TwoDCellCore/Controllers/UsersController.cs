@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TwoDCellCore.Models;
@@ -13,37 +14,33 @@ namespace TwoDCellCore.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly TwoDCellsDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public UsersController(TwoDCellsDbContext context)
+        public UsersController(UserManager<IdentityUser> userManager)
         {
-            _context = context;
+            _userManager = userManager;
         }
 
         // GET: api/Users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<object>>> GetAllUsers()
         {
-            List<User> users = new List<User>(_context.Users.ToList());
-            foreach(var user in users){
-                user.UserName = user.UserName.Trim();
-                user.UserId = user.UserId.Trim();
-            }
-            return users;
-        }
+            var users = _userManager.Users.ToList();
 
-        // GET: api/Users/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(string id)
-        {
-            var user = await _context.Users.FindAsync(id);
-
-            if (user == null)
+            if (users == null || users.Count == 0)
             {
                 return NotFound();
             }
 
-            return user;
+            var usersDto = users.Select(user => new
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                Email = user.Email,
+                // Add more properties as needed
+            });
+
+            return Ok(usersDto);
         }
 
         // PUT: api/Users/5
@@ -79,28 +76,28 @@ namespace TwoDCellCore.Controllers
 
         // POST: api/Users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
-        {
-            _context.Users.Add(user);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (UserExists(user.UserId))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+        //[HttpPost]
+        //public async Task<ActionResult<User>> PostUser(User user)
+        //{
+        //    _userManager.Users.Add(user);
+        //    try
+        //    {
+        //        await _userManager.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateException)
+        //    {
+        //        if (UserExists(user.UserId))
+        //        {
+        //            return Conflict();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
 
-            return CreatedAtAction("GetUser", new { id = user.UserId }, user);
-        }
+        //    return CreatedAtAction("GetUser", new { id = user.UserId }, user);
+        //}
 
         // DELETE: api/Users/5
         //[HttpDelete("{id}")]
@@ -120,7 +117,7 @@ namespace TwoDCellCore.Controllers
 
         private bool UserExists(string id)
         {
-            return _context.Users.Any(e => e.UserId == id);
+            return _userManager.Users.Any(e => e.Id == id);
         }
     }
 }

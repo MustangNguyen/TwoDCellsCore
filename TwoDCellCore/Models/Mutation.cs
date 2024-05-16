@@ -2,24 +2,24 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace TwoDCellCore.Models;
 
 [Table("mutations")]
+[Index("FactionId", Name = "IX_mutations_factionID")]
 public partial class Mutation
 {
+    [Key]
+    [Column("MutationID")]
+    [StringLength(10)]
+    public string MutationId { get; set; } = null!;
+
     [Column("HP")]
     public int Hp { get; set; }
 
     [Column("MP")]
     public int Mp { get; set; }
-
-    [Key]
-    [Column("MutationID")]
-    [StringLength(10)]
-    public string MutationId { get; set; } = null!;
 
     [StringLength(50)]
     public string MutationName { get; set; } = null!;
@@ -40,7 +40,6 @@ public partial class Mutation
 
     public int Shield { get; set; }
 
-    [JsonIgnore]
     [ForeignKey("FactionId")]
     [InverseProperty("Mutations")]
     public virtual CellFaction Faction { get; set; } = null!;

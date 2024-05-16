@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace TwoDCellCore.Models;
 
 [Table("bullets")]
+[Index("BulletTypeId", Name = "IX_bullets_bulletTypeID")]
+[Index("Element", Name = "IX_bullets_element")]
 public partial class Bullet
 {
     [Key]
@@ -40,7 +41,6 @@ public partial class Bullet
     [InverseProperty("Bullets")]
     public virtual BulletType BulletType { get; set; } = null!;
 
-    [JsonIgnore]
     [ForeignKey("Element")]
     [InverseProperty("Bullets")]
     public virtual Element ElementNavigation { get; set; } = null!;

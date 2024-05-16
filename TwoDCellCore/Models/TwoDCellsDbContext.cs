@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace TwoDCellCore.Models;
 
-public partial class TwoDCellsDbContext : DbContext
+public partial class TwoDCellsDbContext : IdentityDbContext
 {
     public TwoDCellsDbContext()
     {
@@ -14,6 +15,8 @@ public partial class TwoDCellsDbContext : DbContext
         : base(options)
     {
     }
+
+   
 
     public virtual DbSet<Bullet> Bullets { get; set; }
 
@@ -41,12 +44,36 @@ public partial class TwoDCellsDbContext : DbContext
 
     public virtual DbSet<UserMutation> UserMutations { get; set; }
 
-//    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-//        => optionsBuilder.UseSqlServer("Data Source=twodcellcoredbserver.database.windows.net;Initial Catalog=TWODCELL;Persist Security Info=True;User ID=Mustang;Password=RaijigenkiZ1223#1");
-
+ 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+        //modelBuilder.Entity<AspNetRole>(entity =>
+        //{
+        //    entity.HasIndex(e => e.NormalizedName, "RoleNameIndex")
+        //        .IsUnique()
+        //        .HasFilter("([NormalizedName] IS NOT NULL)");
+        //});
+
+        //modelBuilder.Entity<AspNetUser>(entity =>
+        //{
+        //    entity.HasIndex(e => e.NormalizedUserName, "UserNameIndex")
+        //        .IsUnique()
+        //        .HasFilter("([NormalizedUserName] IS NOT NULL)");
+
+        //    entity.HasMany(d => d.Roles).WithMany(p => p.Users)
+        //        .UsingEntity<Dictionary<string, object>>(
+        //            "AspNetUserRole",
+        //            r => r.HasOne<AspNetRole>().WithMany().HasForeignKey("RoleId"),
+        //            l => l.HasOne<AspNetUser>().WithMany().HasForeignKey("UserId"),
+        //            j =>
+        //            {
+        //                j.HasKey("UserId", "RoleId");
+        //                j.ToTable("AspNetUserRoles");
+        //                j.HasIndex(new[] { "RoleId" }, "IX_AspNetUserRoles_RoleId");
+        //            });
+        //});
+
         modelBuilder.Entity<Bullet>(entity =>
         {
             entity.Property(e => e.BulletId).IsFixedLength();
@@ -89,7 +116,6 @@ public partial class TwoDCellsDbContext : DbContext
             entity.Property(e => e.Equipment).IsFixedLength();
             entity.Property(e => e.FactionId).IsFixedLength();
             entity.Property(e => e.ShieldType).IsFixedLength();
-            entity.Property(e => e.BodyDamage).IsFixedLength();
 
             entity.HasOne(d => d.Ability).WithMany(p => p.EnemyCells).HasConstraintName("FK_enemy_cells_mutation_abilities");
 
@@ -135,7 +161,6 @@ public partial class TwoDCellsDbContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.Property(e => e.UserId).IsFixedLength();
             entity.Property(e => e.Password).IsFixedLength();
             entity.Property(e => e.UserName).IsFixedLength();
         });
@@ -143,7 +168,6 @@ public partial class TwoDCellsDbContext : DbContext
         modelBuilder.Entity<UserGun>(entity =>
         {
             entity.Property(e => e.GunId).IsFixedLength();
-            entity.Property(e => e.UserId).IsFixedLength();
 
             entity.HasOne(d => d.Gun).WithMany()
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -151,19 +175,26 @@ public partial class TwoDCellsDbContext : DbContext
 
             entity.HasOne(d => d.User).WithMany()
                 .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_user_gun_AspNetUsers");
+
+            entity.HasOne(d => d.UserNavigation).WithMany()
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_user_gun_users");
         });
 
         modelBuilder.Entity<UserMutation>(entity =>
         {
             entity.Property(e => e.MutationId).IsFixedLength();
-            entity.Property(e => e.UserId).IsFixedLength();
 
             entity.HasOne(d => d.Mutation).WithMany()
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_user_mutation_mutations");
 
             entity.HasOne(d => d.User).WithMany()
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_user_mutation_AspNetUsers");
+
+            entity.HasOne(d => d.UserNavigation).WithMany()
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_user_mutation_users");
         });

@@ -11,7 +11,6 @@ public partial class User
 {
     [Key]
     [Column("userID")]
-    [StringLength(30)]
     public string UserId { get; set; } = null!;
 
     [Column("userName")]

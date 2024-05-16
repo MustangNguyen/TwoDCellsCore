@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace TwoDCellCore.Models;
 
-
 [Table("gun_upgrade_config")]
 public partial class GunUpgradeConfig
 {

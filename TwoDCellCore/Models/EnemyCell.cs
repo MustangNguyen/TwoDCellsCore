@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace TwoDCellCore.Models;
 
 [Table("enemy_cells")]
+[Index("AbilityId", Name = "IX_enemy_cells_AbilityID")]
+[Index("FactionId", Name = "IX_enemy_cells_factionID")]
 public partial class EnemyCell
 {
     [Key]
@@ -49,12 +50,10 @@ public partial class EnemyCell
 
     public int? BodyDamage { get; set; }
 
-    [JsonIgnore]
     [ForeignKey("AbilityId")]
     [InverseProperty("EnemyCells")]
     public virtual MutationAbility? Ability { get; set; }
 
-    [JsonIgnore]
     [ForeignKey("FactionId")]
     [InverseProperty("EnemyCells")]
     public virtual CellFaction Faction { get; set; } = null!;
