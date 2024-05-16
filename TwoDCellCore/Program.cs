@@ -15,7 +15,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAuthorization();
 builder.Services.AddIdentityApiEndpoints<IdentityUser>().AddEntityFrameworkStores<TwoDCellsDbContext>();
 builder.Services.AddDbContext<TwoDCellsDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("TwoDCellDatabaseLocal")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("TwoDCellDatabase16052024")));
 
 var app = builder.Build();
 
