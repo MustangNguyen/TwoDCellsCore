@@ -12,7 +12,7 @@ using TwoDCellCore.Models;
 namespace TwoDCellCore.Migrations
 {
     [DbContext(typeof(TwoDCellsDbContext))]
-    [Migration("20240516105715_initial")]
+    [Migration("20240516110731_initial")]
     partial class initial
     {
         /// <inheritdoc />

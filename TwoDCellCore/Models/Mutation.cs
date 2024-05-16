@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace TwoDCellCore.Models;
@@ -40,6 +41,7 @@ public partial class Mutation
 
     public int Shield { get; set; }
 
+    [JsonIgnore]
     [ForeignKey("FactionId")]
     [InverseProperty("Mutations")]
     public virtual CellFaction Faction { get; set; } = null!;

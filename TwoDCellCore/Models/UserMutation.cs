@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,9 +26,11 @@ public partial class UserMutation
     [Column("mutationXp")]
     public int MutationXp { get; set; }
 
+    [JsonIgnore]
     [ForeignKey("MutationId")]
     public virtual Mutation Mutation { get; set; } = null!;
 
+    [JsonIgnore]
     [ForeignKey("UserId")]
     public virtual IdentityUser User { get; set; } = null!;
 }
