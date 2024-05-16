@@ -2,18 +2,19 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace TwoDCellCore.Models;
 
-[Keyless]
 [Table("user_mutation")]
 public partial class UserMutation
 {
+    [Key]
+    [Column("ownershipID")]
+    public string OwnershipId { get; set; } = null!;
+
     [Column("userID")]
-    [StringLength(450)]
+    [StringLength(400)]
     public string UserId { get; set; } = null!;
 
     [Column("mutationID")]
@@ -26,11 +27,11 @@ public partial class UserMutation
     [Column("mutationXp")]
     public int MutationXp { get; set; }
 
-    [JsonIgnore]
     [ForeignKey("MutationId")]
+    [InverseProperty("UserMutations")]
     public virtual Mutation Mutation { get; set; } = null!;
 
-    [JsonIgnore]
     [ForeignKey("UserId")]
-    public virtual IdentityUser User { get; set; } = null!;
+    [InverseProperty("UserMutations")]
+    public virtual AspNetUser User { get; set; } = null!;
 }

@@ -13,9 +13,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAuthorization();
-builder.Services.AddIdentityApiEndpoints<IdentityUser>().AddEntityFrameworkStores<TwoDCellsDbContext>();
+builder.Services.AddIdentityApiEndpoints<AspNetUser>().AddEntityFrameworkStores<TwoDCellsDbContext>();
+
 builder.Services.AddDbContext<TwoDCellsDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("TwoDCell16052024")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("TwoDCellDatabaseLocal")));
 
 var app = builder.Build();
 
@@ -26,7 +27,7 @@ var app = builder.Build();
     app.UseSwaggerUI();
 //}
 
-app.MapGroup("/identity").MapIdentityApi<IdentityUser>();
+app.MapGroup("/identity").MapIdentityApi<AspNetUser>();
 
 app.UseHttpsRedirection();
 

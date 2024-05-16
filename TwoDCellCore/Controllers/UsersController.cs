@@ -14,9 +14,9 @@ namespace TwoDCellCore.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<AspNetUser> _userManager;
 
-        public UsersController(UserManager<IdentityUser> userManager)
+        public UsersController(UserManager<AspNetUser> userManager)
         {
             _userManager = userManager;
         }

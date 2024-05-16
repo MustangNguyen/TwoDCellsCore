@@ -2,18 +2,19 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace TwoDCellCore.Models;
 
-[Keyless]
 [Table("user_gun")]
 public partial class UserGun
 {
+    [Key]
+    [Column("ownershipID")]
+    public string OwnershipId { get; set; } = null!;
+
     [Column("userID")]
-    [StringLength(450)]
+    [StringLength(400)]
     public string UserId { get; set; } = null!;
 
     [Column("gunID")]
@@ -26,11 +27,11 @@ public partial class UserGun
     [Column("gunXp")]
     public int GunXp { get; set; }
 
-    [JsonIgnore]
     [ForeignKey("GunId")]
+    [InverseProperty("UserGuns")]
     public virtual Gun Gun { get; set; } = null!;
 
-    [JsonIgnore]
     [ForeignKey("UserId")]
-    public virtual IdentityUser User { get; set; } = null!;
+    [InverseProperty("UserGuns")]
+    public virtual AspNetUser User { get; set; } = null!;
 }

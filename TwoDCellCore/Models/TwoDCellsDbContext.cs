@@ -17,6 +17,7 @@ public partial class TwoDCellsDbContext : IdentityDbContext
     }
 
 
+    public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
 
     public virtual DbSet<Bullet> Bullets { get; set; }
 
@@ -42,10 +43,16 @@ public partial class TwoDCellsDbContext : IdentityDbContext
 
     public virtual DbSet<UserMutation> UserMutations { get; set; }
 
- 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
+    { 
         base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<AspNetUser>(entity =>
+        {
+            entity.HasIndex(e => e.NormalizedUserName, "UserNameIndex")
+                .IsUnique()
+                .HasFilter("([NormalizedUserName] IS NOT NULL)");
+        });
+
         modelBuilder.Entity<Bullet>(entity =>
         {
             entity.Property(e => e.BulletId).IsFixedLength();
@@ -149,11 +156,11 @@ public partial class TwoDCellsDbContext : IdentityDbContext
         {
             entity.Property(e => e.GunId).IsFixedLength();
 
-            entity.HasOne(d => d.Gun).WithMany()
+            entity.HasOne(d => d.Gun).WithMany(p => p.UserGuns)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_user_gun_guns");
 
-            entity.HasOne(d => d.User).WithMany()
+            entity.HasOne(d => d.User).WithMany(p => p.UserGuns)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_user_gun_AspNetUsers");
         });
@@ -162,11 +169,11 @@ public partial class TwoDCellsDbContext : IdentityDbContext
         {
             entity.Property(e => e.MutationId).IsFixedLength();
 
-            entity.HasOne(d => d.Mutation).WithMany()
+            entity.HasOne(d => d.Mutation).WithMany(p => p.UserMutations)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_user_mutation_mutations");
 
-            entity.HasOne(d => d.User).WithMany()
+            entity.HasOne(d => d.User).WithMany(p => p.UserMutations)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_user_mutation_AspNetUsers");
         });
