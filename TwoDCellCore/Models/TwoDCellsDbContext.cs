@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace TwoDCellCore.Models;
 
-public partial class TwoDCellsDbContext : IdentityDbContext
+public partial class TwoDCellsDbContext : IdentityDbContext<GameUser>
 {
     public TwoDCellsDbContext()
     {
@@ -17,7 +18,7 @@ public partial class TwoDCellsDbContext : IdentityDbContext
     }
 
 
-    public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
+    public virtual DbSet<GameUser> AspNetUsers { get; set; }
 
     public virtual DbSet<Bullet> Bullets { get; set; }
 
@@ -46,7 +47,7 @@ public partial class TwoDCellsDbContext : IdentityDbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     { 
         base.OnModelCreating(modelBuilder);
-        modelBuilder.Entity<AspNetUser>(entity =>
+        modelBuilder.Entity<GameUser>(entity =>
         {
             entity.HasIndex(e => e.NormalizedUserName, "UserNameIndex")
                 .IsUnique()

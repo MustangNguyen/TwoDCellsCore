@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,13 +11,13 @@ using TwoDCellCore.Models;
 
 namespace TwoDCellCore.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
-        private readonly UserManager<AspNetUser> _userManager;
+        private readonly UserManager<GameUser> _userManager;
 
-        public UsersController(UserManager<AspNetUser> userManager)
+        public UsersController(UserManager<GameUser> userManager)
         {
             _userManager = userManager;
         }
