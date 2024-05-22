@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using TwoDCellCore.Models;
 
 
 namespace TwoDCellCore.Models;
@@ -152,6 +153,12 @@ public partial class TwoDCellsDbContext : IdentityDbContext<GameUser>
 
             entity.Property(e => e.MutationLv).ValueGeneratedNever();
         });
+        modelBuilder.Entity<IngameLevelConfig>(entity =>
+        {
+            entity.HasKey(e => e.inGameLv).HasName("PK__ingame_l__4400D4D8552BD21F");
+
+            entity.Property(e => e.xpRequire).ValueGeneratedNever();
+        });
 
         modelBuilder.Entity<UserGun>(entity =>
         {
@@ -183,4 +190,6 @@ public partial class TwoDCellsDbContext : IdentityDbContext<GameUser>
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+public DbSet<TwoDCellCore.Models.IngameLevelConfig> IngameLevelConfig { get; set; } = default!;
 }
