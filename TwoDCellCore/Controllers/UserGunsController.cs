@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TwoDCellCore.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.OpenApi;
 
 namespace TwoDCellCore.Controllers
 {
@@ -22,26 +24,26 @@ namespace TwoDCellCore.Controllers
             _context = context;
         }
 
-        // GET: api/UserGuns
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserGun>>> GetUserGuns()
-        {
-            return await _context.UserGuns.ToListAsync();
-        }
+        //// GET: api/UserGuns
+        //[HttpGet]
+        //public async Task<ActionResult<IEnumerable<UserGun>>> GetUserGuns()
+        //{
+        //    return await _context.UserGuns.ToListAsync();
+        //}
 
-        // GET: api/UserGuns/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<UserGun>> GetUserGun(string id)
-        {
-            var userGun = await _context.UserGuns.FindAsync(id);
+        //// GET: api/UserGuns/5
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<UserGun>> GetUserGun(string id)
+        //{
+        //    var userGun = await _context.UserGuns.FindAsync(id);
 
-            if (userGun == null)
-            {
-                return NotFound();
-            }
+        //    if (userGun == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return userGun;
-        }
+        //    return userGun;
+        //}
 
         //// PUT: api/UserGuns/5
         //// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -120,4 +122,109 @@ namespace TwoDCellCore.Controllers
             return _context.UserGuns.Any(e => e.OwnershipId == id);
         }
     }
+
+    public static class UserGunEndpoints
+    {
+        [Authorize]
+        public static void MapUserGunEndpoints(this IEndpointRouteBuilder routes)
+        {
+            var group = routes.MapGroup("/api/UserGun").WithTags(nameof(UserGun)).RequireAuthorization();
+            group.MapGet("/", async (TwoDCellsDbContext db) =>
+            {
+                return await db.UserGuns.ToListAsync();
+            })
+            .WithName("GetAllUserGuns")
+            .WithOpenApi();
+
+            group.MapGet("/getUserGunList/{UserID}", async (string UserID, TwoDCellsDbContext db) =>
+            {
+                var listUserGun = await db.UserGuns.Where(u => u.UserId == UserID).ToListAsync();
+                return Results.Ok(listUserGun);
+            })
+            .WithName("GetUserGunList")
+            .WithOpenApi();
+
+            //group.MapPut("/{id}", async Task<Results<Ok, NotFound>> (string ownershipid, UserGun userGun, TwoDCellsDbContext db) =>
+            //{
+            //    var affected = await db.UserGuns
+            //        .Where(model => model.OwnershipId == ownershipid)
+            //        .ExecuteUpdateAsync(setters => setters
+            //          .SetProperty(m => m.OwnershipId, userGun.OwnershipId)
+            //          .SetProperty(m => m.UserId, userGun.UserId)
+            //          .SetProperty(m => m.GunId, userGun.GunId)
+            //          .SetProperty(m => m.GunLv, userGun.GunLv)
+            //          .SetProperty(m => m.GunXp, userGun.GunXp)
+            //          );
+            //    return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
+            //})
+            //    .WithName("UpdateUserGun")
+            //    .WithOpenApi();
+
+            group.MapPost("/AddNewGun/", async (NewUserGun newUserGun, TwoDCellsDbContext db) =>
+            {
+                UserGun userGun = new();
+                userGun.OwnershipId = newUserGun.UserId + newUserGun.GunId;
+                userGun.GunId = newUserGun.GunId;
+                userGun.UserId = newUserGun.UserId;
+                userGun.GunLv = 0;
+                userGun.GunXp = 0;
+                var existingUserGun = await db.UserGuns.FirstOrDefaultAsync(u => u.UserId == userGun.UserId && u.GunId == userGun.GunId);
+                int count = 0;
+
+                while (existingUserGun != null)
+                {
+                    count++;
+                    userGun.OwnershipId = userGun.UserId + userGun.GunId + count;
+                    existingUserGun = await db.UserGuns.FirstOrDefaultAsync(u => u.OwnershipId == userGun.OwnershipId);
+                }
+                db.UserGuns.Add(userGun);
+                await db.SaveChangesAsync();
+                return TypedResults.Created($"/api/UserGun/{userGun.OwnershipId}", userGun);
+            })
+            .WithName("CreateUserGun")
+            .WithOpenApi();
+
+            group.MapPost("/UpgradeGun/", async (UpgradeUserGun upgradeUserGun, TwoDCellsDbContext db) =>
+            {
+                UserGun userGun = new();
+                userGun = await db.UserGuns.Where(u => u.OwnershipId == upgradeUserGun.OwnerShipId).FirstAsync();
+                userGun.GunLv = upgradeUserGun.Lv;
+                userGun.GunXp = upgradeUserGun.Xp;
+                var affected = await db.UserGuns
+                    .Where(model => model.OwnershipId == upgradeUserGun.OwnerShipId)
+                    .ExecuteUpdateAsync(setters => setters
+                      .SetProperty(m => m.OwnershipId, userGun.OwnershipId)
+                      .SetProperty(m => m.UserId, userGun.UserId)
+                      .SetProperty(m => m.GunId, userGun.GunId)
+                      .SetProperty(m => m.GunLv, upgradeUserGun.Lv)
+                      .SetProperty(m => m.GunXp, upgradeUserGun.Xp)
+                      );
+                await db.SaveChangesAsync();
+                return Results.Ok(userGun);
+            })
+            .WithName("UpgradeUserGun")
+            .WithOpenApi();
+
+            //group.MapDelete("/{id}", async Task<Results<Ok, NotFound>> (string ownershipid, TwoDCellsDbContext db) =>
+            //{
+            //    var affected = await db.UserGuns
+            //        .Where(model => model.OwnershipId == ownershipid)
+            //    .ExecuteDeleteAsync();
+            //    return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
+            //})
+            //.WithName("DeleteUserGun")
+            //.WithOpenApi();
+        }
+    }
+}
+public class NewUserGun
+{
+    public string UserId { get; set; }
+    public string GunId { get; set; }
+}
+public class UpgradeUserGun
+{
+    public string OwnerShipId { get; set; }
+    public int Lv { get; set; }
+    public int Xp { get; set; }
 }

@@ -43,7 +43,27 @@ namespace TwoDCellCore.Controllers
 
             return Ok(usersDto);
         }
+        [Authorize]
+        [HttpGet("{email}")]
+        public async Task<ActionResult<UserMutation>> GetUserMutation(string email)
+        {
+            var users = _userManager.Users.Where(x=>x.Email == email).ToList();
 
+            if (users == null || users.Count == 0)
+            {
+                return NotFound();
+            }
+
+            var usersDto = users.Select(user => new
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                Email = user.Email,
+                // Add more properties as needed
+            });
+
+            return Ok(usersDto);
+        }
         // PUT: api/Users/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         //[HttpPut("{id}")]

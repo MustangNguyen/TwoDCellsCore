@@ -4,6 +4,7 @@ using TwoDCellCore.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
+using TwoDCellCore.Controllers;
 
 
 
@@ -61,10 +62,18 @@ var app = builder.Build();
 //}
 app.MapGroup("/identity").MapIdentityApi<GameUser>();
 
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+};
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapUserGunEndpoints();
 
 app.Run();
