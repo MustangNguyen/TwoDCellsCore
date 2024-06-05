@@ -76,4 +76,6 @@ app.MapControllers();
 
 app.MapUserGunEndpoints();
 
+app.MapUserMutationEndpoints();
+
 app.Run();
