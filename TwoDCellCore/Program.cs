@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Configuration;
 using TwoDCellCore.Models;
 using Microsoft.Extensions.Configuration;
@@ -77,5 +77,7 @@ app.MapControllers();
 app.MapUserGunEndpoints();
 
 app.MapUserMutationEndpoints();
+
+app.MapUserEquipmentEndpoints();
 
 app.Run();

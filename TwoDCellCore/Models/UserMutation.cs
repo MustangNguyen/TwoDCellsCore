@@ -38,4 +38,8 @@ public partial class UserMutation
     [ForeignKey("UserId")]
     [InverseProperty("UserMutations")]
     public virtual GameUser User { get; set; } = null!;
+
+    [JsonIgnore]
+    [InverseProperty("MutationOwnership")]
+    public virtual UserEquipment UserEquipments { get; set; }
 }

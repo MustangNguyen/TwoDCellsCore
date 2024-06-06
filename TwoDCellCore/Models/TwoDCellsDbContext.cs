@@ -55,6 +55,27 @@ public partial class TwoDCellsDbContext : IdentityDbContext<GameUser>
                 .HasFilter("([NormalizedUserName] IS NOT NULL)");
         });
 
+        modelBuilder.Entity<UserEquipment>(entity =>
+        {
+            entity.Property(e => e.UserEquipmentId).ValueGeneratedNever();
+
+            entity.HasOne(d => d.GunOwnershipId1Navigation).WithOne(p => p.UserEquipmentGunOwnershipId1Navigations)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_user_equipment_user_gun");
+
+            entity.HasOne(d => d.GunOwnershipId2Navigation).WithOne(p => p.UserEquipmentGunOwnershipId2Navigations)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_user_equipment_user_gun1");
+
+            entity.HasOne(d => d.MutationOwnership).WithOne(p => p.UserEquipments)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_user_equipment_user_mutation");
+
+            entity.HasOne(d => d.User).WithMany(p => p.UserEquipment)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_user_equipment_AspNetUsers");
+        });
+
         modelBuilder.Entity<Bullet>(entity =>
         {
             entity.Property(e => e.BulletId).IsFixedLength();
@@ -192,4 +213,6 @@ public partial class TwoDCellsDbContext : IdentityDbContext<GameUser>
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 
 public DbSet<TwoDCellCore.Models.IngameLevelConfig> IngameLevelConfig { get; set; } = default!;
+
+public DbSet<TwoDCellCore.Models.UserEquipment> UserEquipment { get; set; } = default!;
 }

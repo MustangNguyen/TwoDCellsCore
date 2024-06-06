@@ -209,12 +209,12 @@ public static class UserMutationEndpoints
 }}
 public class NewUserMutation
 {
-    public string UserId { get; set; }
-    public string MutationId { get; set; }
+    public string UserId { get; set; } = null!;
+    public string MutationId { get; set; } = null!;
 }
 public class UpgradeUserMutation
 {
-    public string OwnerShipId { get; set; }
+    public string OwnerShipId { get; set; } = null!;
     public int Lv { get; set; }
     public int Xp { get; set; }
 }

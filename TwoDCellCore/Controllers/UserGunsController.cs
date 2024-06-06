@@ -24,103 +24,6 @@ namespace TwoDCellCore.Controllers
             _context = context;
         }
 
-        //// GET: api/UserGuns
-        //[HttpGet]
-        //public async Task<ActionResult<IEnumerable<UserGun>>> GetUserGuns()
-        //{
-        //    return await _context.UserGuns.ToListAsync();
-        //}
-
-        //// GET: api/UserGuns/5
-        //[HttpGet("{id}")]
-        //public async Task<ActionResult<UserGun>> GetUserGun(string id)
-        //{
-        //    var userGun = await _context.UserGuns.FindAsync(id);
-
-        //    if (userGun == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return userGun;
-        //}
-
-        //// PUT: api/UserGuns/5
-        //// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> PutUserGun(string id, UserGun userGun)
-        //{
-        //    if (id != userGun.OwnershipId)
-        //    {
-        //        return BadRequest();
-        //    }
-
-        //    _context.Entry(userGun).State = EntityState.Modified;
-
-        //    try
-        //    {
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateConcurrencyException)
-        //    {
-        //        if (!UserGunExists(id))
-        //        {
-        //            return NotFound();
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //    }
-
-        //    return NoContent();
-        //}
-
-        //// POST: api/UserGuns
-        //// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        //[HttpPost]
-        //public async Task<ActionResult<UserGun>> PostUserGun(UserGun userGun)
-        //{
-        //    _context.UserGuns.Add(userGun);
-        //    try
-        //    {
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateException)
-        //    {
-        //        if (UserGunExists(userGun.OwnershipId))
-        //        {
-        //            return Conflict();
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //    }
-
-        //    return CreatedAtAction("GetUserGun", new { id = userGun.OwnershipId }, userGun);
-        //}
-
-        //// DELETE: api/UserGuns/5
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> DeleteUserGun(string id)
-        //{
-        //    var userGun = await _context.UserGuns.FindAsync(id);
-        //    if (userGun == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    _context.UserGuns.Remove(userGun);
-        //    await _context.SaveChangesAsync();
-
-        //    return NoContent();
-        //}
-
-        private bool UserGunExists(string id)
-        {
-            return _context.UserGuns.Any(e => e.OwnershipId == id);
-        }
     }
 
     public static class UserGunEndpoints
@@ -200,7 +103,7 @@ namespace TwoDCellCore.Controllers
                       .SetProperty(m => m.GunXp, upgradeUserGun.Xp)
                       );
                 await db.SaveChangesAsync();
-                return Results.Ok(userGun);
+                return affected == 1 ? Results.Ok(userGun) : Results.NotFound();
             })
             .WithName("UpgradeUserGun")
             .WithOpenApi();
@@ -219,12 +122,12 @@ namespace TwoDCellCore.Controllers
 }
 public class NewUserGun
 {
-    public string UserId { get; set; }
-    public string GunId { get; set; }
+    public string UserId { get; set; } = null!;
+    public string GunId { get; set; } = null!;
 }
 public class UpgradeUserGun
 {
-    public string OwnerShipId { get; set; }
+    public string OwnerShipId { get; set; } = null!;
     public int Lv { get; set; }
     public int Xp { get; set; }
 }

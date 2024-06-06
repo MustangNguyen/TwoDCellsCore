@@ -17,4 +17,9 @@ public class GameUser : IdentityUser
     [JsonIgnore]
     [InverseProperty("User")]
     public virtual ICollection<UserMutation> UserMutations { get; set; } = new List<UserMutation>();
+
+    [JsonIgnore]
+    [InverseProperty("User")]
+    public virtual ICollection<UserEquipment> UserEquipment { get; set; } = new List<UserEquipment>();
+
 }

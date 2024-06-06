@@ -38,4 +38,12 @@ public partial class UserGun
     [ForeignKey("UserId")]
     [InverseProperty("UserGuns")]
     public virtual GameUser User { get; set; } = null!;
+
+    [JsonIgnore]
+    [InverseProperty("GunOwnershipId1Navigation")]
+    public virtual UserEquipment UserEquipmentGunOwnershipId1Navigations { get; set; } 
+
+    [JsonIgnore]
+    [InverseProperty("GunOwnershipId2Navigation")]
+    public virtual UserEquipment UserEquipmentGunOwnershipId2Navigations { get; set; }
 }
