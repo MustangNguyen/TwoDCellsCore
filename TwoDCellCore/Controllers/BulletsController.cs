@@ -22,7 +22,7 @@ namespace TwoDCellCore.Controllers
 
         // GET: api/Bullets
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Bullet>>> GetBullets()
+        public IEnumerable<Bullet> GetBullets()
         {
             List<Bullet> bullets = new List<Bullet>(_context.Bullets.ToList());
             foreach(var bullet in bullets)
@@ -32,7 +32,7 @@ namespace TwoDCellCore.Controllers
                 bullet.BulletTypeId = bullet.BulletTypeId.Trim();
                 bullet.Element = bullet.Element.Trim();
             }
-            return bullets;
+            return bullets.ToList();
         }
 
         //// GET: api/Bullets/5
