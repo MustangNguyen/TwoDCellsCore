@@ -139,9 +139,9 @@ public partial class TwoDCellsDbContext : IdentityDbContext<GameUser>
 
         modelBuilder.Entity<GunUpgradeConfig>(entity =>
         {
-            entity.HasKey(e => e.MutationLv).HasName("PK__gun_upgr__3133F2595884267F");
+            entity.HasKey(e => e.GunLv).HasName("PK__gun_upgr__7EA6F9A419B4DD29");
 
-            entity.Property(e => e.MutationLv).ValueGeneratedNever();
+            entity.Property(e => e.GunLv).ValueGeneratedNever();
         });
 
         modelBuilder.Entity<Mutation>(entity =>
