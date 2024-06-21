@@ -24,7 +24,13 @@ namespace TwoDCellCore.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Gun>>> GetGuns()
         {
-            return await _context.Guns.ToListAsync();
+            List<Gun> guns = await _context.Guns.ToListAsync();
+            foreach(var gun in guns)
+            {
+                gun.GunId = gun.GunId.Trim();
+                gun.GunName = gun.GunName.Trim();
+            }
+            return guns;
         }
 
         //// GET: api/Guns/5
