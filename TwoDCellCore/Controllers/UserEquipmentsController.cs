@@ -45,7 +45,6 @@ public static class UserEquipmentEndpoints
             var results = await db.UserEquipment.AsNoTracking()
                 .Where(model => model.UserId == userid)
                 .ToListAsync();
-
             return results.Any()
                 ? TypedResults.Ok(results)
                 : TypedResults.NotFound();

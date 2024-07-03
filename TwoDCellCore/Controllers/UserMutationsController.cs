@@ -140,6 +140,10 @@ public static class UserMutationEndpoints
             group.MapGet("/getUserMutationList/{UserID}", async (string UserID, TwoDCellsDbContext db) =>
             {
                 var listUserMutation = await db.UserMutations.Where(u => u.UserId == UserID).ToListAsync();
+                foreach(var item in listUserMutation)
+                {
+                    item.MutationId = item.MutationId.Trim();
+                }
                 return Results.Ok(listUserMutation);
             })
             .WithName("GetUserMutationList")

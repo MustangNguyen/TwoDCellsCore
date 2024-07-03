@@ -42,6 +42,10 @@ namespace TwoDCellCore.Controllers
             group.MapGet("/getUserGunList/{UserID}", async (string UserID, TwoDCellsDbContext db) =>
             {
                 var listUserGun = await db.UserGuns.Where(u => u.UserId == UserID).ToListAsync();
+                foreach (var item in listUserGun)
+                {
+                    item.GunId = item.GunId.Trim();
+                }
                 return Results.Ok(listUserGun);
             })
             .WithName("GetUserGunList")
