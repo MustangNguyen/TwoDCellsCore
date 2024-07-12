@@ -50,6 +50,7 @@ public partial class EnemyCell
     public string Equipment { get; set; } = null!;
 
     public int? BodyDamage { get; set; }
+    public int? XpObs { get; set; }
 
     [JsonIgnore]
     [ForeignKey("AbilityId")]

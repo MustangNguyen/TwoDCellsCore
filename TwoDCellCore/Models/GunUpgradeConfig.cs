@@ -10,9 +10,9 @@ namespace TwoDCellCore.Models;
 public partial class GunUpgradeConfig
 {
     [Key]
-    [Column("mutationLv")]
-    public int MutationLv { get; set; }
+    [Column("gunLv")]
+    public int GunLv { get; set; }
 
     [Column("xpRequire")]
-    public int XpRequire { get; set; }
+    public int? XpRequire { get; set; }
 }

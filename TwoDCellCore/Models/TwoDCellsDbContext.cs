@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using TwoDCellCore.Models;
+
 
 namespace TwoDCellCore.Models;
 
-public partial class TwoDCellsDbContext : DbContext
+public partial class TwoDCellsDbContext : IdentityDbContext<GameUser>
 {
     public TwoDCellsDbContext()
     {
@@ -15,17 +18,8 @@ public partial class TwoDCellsDbContext : DbContext
     {
     }
 
-    public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
 
-    public virtual DbSet<AspNetRoleClaim> AspNetRoleClaims { get; set; }
-
-    public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
-
-    public virtual DbSet<AspNetUserClaim> AspNetUserClaims { get; set; }
-
-    public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
-
-    public virtual DbSet<AspNetUserToken> AspNetUserTokens { get; set; }
+    public virtual DbSet<GameUser> AspNetUsers { get; set; }
 
     public virtual DbSet<Bullet> Bullets { get; set; }
 
@@ -47,39 +41,39 @@ public partial class TwoDCellsDbContext : DbContext
 
     public virtual DbSet<MutationUpgradeConfig> MutationUpgradeConfigs { get; set; }
 
-    public virtual DbSet<User> Users { get; set; }
-
     public virtual DbSet<UserGun> UserGuns { get; set; }
 
     public virtual DbSet<UserMutation> UserMutations { get; set; }
 
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<AspNetRole>(entity =>
-        {
-            entity.HasIndex(e => e.NormalizedName, "RoleNameIndex")
-                .IsUnique()
-                .HasFilter("([NormalizedName] IS NOT NULL)");
-        });
-
-        modelBuilder.Entity<AspNetUser>(entity =>
+    { 
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.Entity<GameUser>(entity =>
         {
             entity.HasIndex(e => e.NormalizedUserName, "UserNameIndex")
                 .IsUnique()
                 .HasFilter("([NormalizedUserName] IS NOT NULL)");
+        });
 
-            entity.HasMany(d => d.Roles).WithMany(p => p.Users)
-                .UsingEntity<Dictionary<string, object>>(
-                    "AspNetUserRole",
-                    r => r.HasOne<AspNetRole>().WithMany().HasForeignKey("RoleId"),
-                    l => l.HasOne<AspNetUser>().WithMany().HasForeignKey("UserId"),
-                    j =>
-                    {
-                        j.HasKey("UserId", "RoleId");
-                        j.ToTable("AspNetUserRoles");
-                        j.HasIndex(new[] { "RoleId" }, "IX_AspNetUserRoles_RoleId");
-                    });
+        modelBuilder.Entity<UserEquipment>(entity =>
+        {
+            entity.Property(e => e.UserEquipmentId).ValueGeneratedNever();
+
+            entity.HasOne(d => d.GunOwnershipId1Navigation).WithOne(p => p.UserEquipmentGunOwnershipId1Navigations)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_user_equipment_user_gun");
+
+            entity.HasOne(d => d.GunOwnershipId2Navigation).WithOne(p => p.UserEquipmentGunOwnershipId2Navigations)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_user_equipment_user_gun1");
+
+            entity.HasOne(d => d.MutationOwnership).WithOne(p => p.UserEquipments)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_user_equipment_user_mutation");
+
+            entity.HasOne(d => d.User).WithMany(p => p.UserEquipment)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_user_equipment_AspNetUsers");
         });
 
         modelBuilder.Entity<Bullet>(entity =>
@@ -143,6 +137,13 @@ public partial class TwoDCellsDbContext : DbContext
                 .HasConstraintName("FK_guns_bullets");
         });
 
+        modelBuilder.Entity<GunUpgradeConfig>(entity =>
+        {
+            entity.HasKey(e => e.GunLv).HasName("PK__gun_upgr__7EA6F9A419B4DD29");
+
+            entity.Property(e => e.GunLv).ValueGeneratedNever();
+        });
+
         modelBuilder.Entity<Mutation>(entity =>
         {
             entity.HasKey(e => e.MutationId).HasName("PK_Test_Table1");
@@ -167,22 +168,28 @@ public partial class TwoDCellsDbContext : DbContext
             entity.HasOne(d => d.Mutation).WithMany(p => p.MutationAbilities).HasConstraintName("FK_mutation_abilities_mutations");
         });
 
-        modelBuilder.Entity<User>(entity =>
+        modelBuilder.Entity<MutationUpgradeConfig>(entity =>
         {
-            entity.Property(e => e.UserId).IsFixedLength();
-            entity.Property(e => e.Password).IsFixedLength();
-            entity.Property(e => e.UserName).IsFixedLength();
+            entity.HasKey(e => e.MutationLv).HasName("PK__mutation__3133F259C7CDCB68");
+
+            entity.Property(e => e.MutationLv).ValueGeneratedNever();
+        });
+        modelBuilder.Entity<IngameLevelConfig>(entity =>
+        {
+            entity.HasKey(e => e.inGameLv).HasName("PK__ingame_l__4400D4D8552BD21F");
+
+            entity.Property(e => e.xpRequire).ValueGeneratedNever();
         });
 
         modelBuilder.Entity<UserGun>(entity =>
         {
             entity.Property(e => e.GunId).IsFixedLength();
 
-            entity.HasOne(d => d.Gun).WithMany()
+            entity.HasOne(d => d.Gun).WithMany(p => p.UserGuns)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_user_gun_guns");
 
-            entity.HasOne(d => d.IdNavigation).WithMany()
+            entity.HasOne(d => d.User).WithMany(p => p.UserGuns)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_user_gun_AspNetUsers");
         });
@@ -191,17 +198,21 @@ public partial class TwoDCellsDbContext : DbContext
         {
             entity.Property(e => e.MutationId).IsFixedLength();
 
-            entity.HasOne(d => d.IdNavigation).WithMany()
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_user_mutation_AspNetUsers");
-
-            entity.HasOne(d => d.Mutation).WithMany()
+            entity.HasOne(d => d.Mutation).WithMany(p => p.UserMutations)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_user_mutation_mutations");
+
+            entity.HasOne(d => d.User).WithMany(p => p.UserMutations)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_user_mutation_AspNetUsers");
         });
 
         OnModelCreatingPartial(modelBuilder);
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+public DbSet<TwoDCellCore.Models.IngameLevelConfig> IngameLevelConfig { get; set; } = default!;
+
+public DbSet<TwoDCellCore.Models.UserEquipment> UserEquipment { get; set; } = default!;
 }

@@ -48,4 +48,8 @@ public partial class Mutation
 
     [InverseProperty("Mutation")]
     public virtual ICollection<MutationAbility> MutationAbilities { get; set; } = new List<MutationAbility>();
+
+    [JsonIgnore]
+    [InverseProperty("Mutation")]
+    public virtual ICollection<UserMutation> UserMutations { get; set; } = new List<UserMutation>();
 }

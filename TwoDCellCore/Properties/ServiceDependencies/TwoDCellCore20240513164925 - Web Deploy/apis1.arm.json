@@ -97,11 +97,11 @@
               "type": "Microsoft.ApiManagement/service/apis",
               "name": "TwoDCellsCoreapi/TwoDCellCore",
               "properties": {
-                "displayName": "TwoDCellCore",
+                "displayName": "TwoDCellCore, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
                 "apiRevision": "1",
                 "description": null,
                 "subscriptionRequired": true,
-                "serviceUrl": null,
+                "serviceUrl": "https://twodcellcore20240513164925.azurewebsites.net",
                 "path": "",
                 "protocols": [
                   "https"

@@ -5,11 +5,11 @@
       "type": "apis.azure"
     },
     "mssql1": {
-      "serviceConnectorResourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Web/sites/TwoDCellCore20240513164925/providers/Microsoft.ServiceLinker/linkers/ConnectionStringsTwoDCellDatabase_56EF34A0C2",
+      "serviceConnectorResourceId": "",
       "secretStore": "AzureAppSettings",
-      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/twodcellcoredbserver/databases/TWODCELL",
-      "type": "mssql.azure",
-      "connectionId": "ConnectionStrings:TwoDCellDatabase"
+      "type": "mssql.onprem",
+      "connectionId": "ConnectionStrings:TwoDCell16052024",
+      "dynamicId": null
     }
   }
 }

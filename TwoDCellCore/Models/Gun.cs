@@ -40,4 +40,8 @@ public partial class Gun
     [ForeignKey("BulletId")]
     [InverseProperty("Guns")]
     public virtual Bullet Bullet { get; set; } = null!;
+
+    [JsonIgnore]
+    [InverseProperty("Gun")]
+    public virtual ICollection<UserGun> UserGuns { get; set; } = new List<UserGun>();
 }

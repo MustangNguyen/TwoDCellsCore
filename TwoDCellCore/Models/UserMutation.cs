@@ -3,34 +3,43 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace TwoDCellCore.Models;
 
-[Keyless]
 [Table("user_mutation")]
-[Index("MutationId", Name = "IX_user_mutation_MutationID")]
-[Index("Id", Name = "IX_user_mutation_userID")]
 public partial class UserMutation
 {
-    [Column("id")]
-    public string Id { get; set; } = null!;
+    [Key]
+    [Column("ownershipID")]
+    public string OwnershipId { get; set; } = null!;
 
-    [Column("MutationID")]
+    [Column("userID")]
+    [StringLength(400)]
+    public string UserId { get; set; } = null!;
+
+    [Column("mutationID")]
     [StringLength(10)]
     public string MutationId { get; set; } = null!;
 
     [Column("mutationLv")]
     public int MutationLv { get; set; }
 
-    [Column("mutationiXp")]
-    public int MutationiXp { get; set; }
-
-    [JsonIgnore]
-    [ForeignKey("Id")]
-    public virtual AspNetUser IdNavigation { get; set; } = null!;
+    [Column("mutationXp")]
+    public int MutationXp { get; set; }
 
     [JsonIgnore]
     [ForeignKey("MutationId")]
+    [InverseProperty("UserMutations")]
     public virtual Mutation Mutation { get; set; } = null!;
+
+    [JsonIgnore]
+    [ForeignKey("UserId")]
+    [InverseProperty("UserMutations")]
+    public virtual GameUser User { get; set; } = null!;
+
+    [JsonIgnore]
+    [InverseProperty("MutationOwnership")]
+    public virtual UserEquipment UserEquipments { get; set; }
 }

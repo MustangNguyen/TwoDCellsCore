@@ -23,6 +23,7 @@ public partial class MutationAbility
     [StringLength(10)]
     public string? MutationId { get; set; }
 
+    [JsonIgnore]
     [InverseProperty("Ability")]
     public virtual ICollection<EnemyCell> EnemyCells { get; set; } = new List<EnemyCell>();
 

@@ -6,13 +6,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace TwoDCellCore.Models;
 
-[Table("mutation_upgrade_config")]
-public partial class MutationUpgradeConfig
+[Table("ingame_level_config")]
+public partial class IngameLevelConfig
 {
     [Key]
-    [Column("mutationLv")]
-    public int MutationLv { get; set; }
+    [Column("inGameLv")]
+    public int inGameLv { get; set; }
 
     [Column("xpRequire")]
-    public int? XpRequire { get; set; }
+    public int? xpRequire { get; set; }
 }
