@@ -20,7 +20,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddIdentityApiEndpoints<GameUser>().AddEntityFrameworkStores<TwoDCellsDbContext>();
 
 builder.Services.AddDbContext<TwoDCellsDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("TwoDCell16052024")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("TwoDCellDatabaseLocal")));
 
 builder.Services.AddSwaggerGen(opt =>
 {
