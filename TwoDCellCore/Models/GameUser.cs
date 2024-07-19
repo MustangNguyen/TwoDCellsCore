@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using TwoDCellCore.Models;
 
 namespace TwoDCellCore.Models;
 
@@ -22,4 +23,6 @@ public class GameUser : IdentityUser
     [InverseProperty("User")]
     public virtual ICollection<UserEquipment> UserEquipment { get; set; } = new List<UserEquipment>();
 
+    [InverseProperty("User")]
+    public virtual ICollection<NodeProcess> NodeProcesses { get; set; } = new List<NodeProcess>();
 }

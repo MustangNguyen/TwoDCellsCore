@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using TwoDCellCore.Models;
 
 
 namespace TwoDCellCore.Models;
@@ -40,6 +39,12 @@ public partial class TwoDCellsDbContext : IdentityDbContext<GameUser>
     public virtual DbSet<MutationAbility> MutationAbilities { get; set; }
 
     public virtual DbSet<MutationUpgradeConfig> MutationUpgradeConfigs { get; set; }
+
+    public virtual DbSet<NodeProcess> NodeProcesses { get; set; }
+
+    public virtual DbSet<Planet> Planets { get; set; }
+
+    public virtual DbSet<PlanetNode> PlanetNodes { get; set; }
 
     public virtual DbSet<UserGun> UserGuns { get; set; }
 
@@ -174,6 +179,36 @@ public partial class TwoDCellsDbContext : IdentityDbContext<GameUser>
 
             entity.Property(e => e.MutationLv).ValueGeneratedNever();
         });
+
+        modelBuilder.Entity<NodeProcess>(entity =>
+        {
+            entity.HasKey(e => new { e.UserId, e.NodeId }).HasName("PK__node_pro__1B3C6DBA00092DFE");
+
+            entity.HasOne(d => d.Node).WithMany(p => p.NodeProcesses)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_node_process_planet_node");
+
+            entity.HasOne(d => d.User).WithMany(p => p.NodeProcesses)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_node_process_AspNetUsers");
+        });
+
+        modelBuilder.Entity<Planet>(entity =>
+        {
+            entity.HasKey(e => e.PlanetId).HasName("PK_Planet");
+        });
+
+        modelBuilder.Entity<PlanetNode>(entity =>
+        {
+            entity.HasKey(e => e.NodeId).HasName("PK_PlanetNode");
+
+            entity.HasOne(d => d.Planet)
+                  .WithMany(p => p.PlanetNodes)
+                  .HasForeignKey(d => d.PlanetId)
+                  .OnDelete(DeleteBehavior.ClientSetNull)
+                  .HasConstraintName("FK_PlanetNode_Planet");
+        });
+
         modelBuilder.Entity<IngameLevelConfig>(entity =>
         {
             entity.HasKey(e => e.inGameLv).HasName("PK__ingame_l__4400D4D8552BD21F");
