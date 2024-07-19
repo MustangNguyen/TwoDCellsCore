@@ -60,7 +60,7 @@ var app = builder.Build();
         c.SwaggerEndpoint("v1/swagger.json", "TwoDCells V1");
     });
 //}
-app.MapGroup("/identity").MapIdentityApi<GameUser>();
+app.MapGroup("/identity").MapCustomIdentityApi<GameUser>();
 
 if (app.Environment.IsDevelopment())
 {
