@@ -80,4 +80,6 @@ app.MapUserMutationEndpoints();
 
 app.MapUserEquipmentEndpoints();
 
+app.MapNodeProcessEndpoints();
+
 app.Run();

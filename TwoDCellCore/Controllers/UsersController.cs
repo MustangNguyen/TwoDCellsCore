@@ -38,6 +38,7 @@ namespace TwoDCellCore.Controllers
                 Id = user.Id,
                 UserName = user.UserName,
                 Email = user.Email,
+                NodeProcesses = user.NodeProcesses
                 // Add more properties as needed
             });
 
