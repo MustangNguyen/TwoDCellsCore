@@ -24,39 +24,31 @@ namespace TwoDCellCore.Controllers
             .WithName("GetAllNodeProcesses")
             .WithOpenApi();
 
-            group.MapGet("/{id}", async Task<Results<Ok<NodeProcess>, NotFound>> (string userid, TwoDCellsDbContext db) =>
+            group.MapPost("/", async (NodeProcess nodeProcess, TwoDCellsDbContext db) =>
             {
-                return await db.NodeProcesses.AsNoTracking()
-                    .FirstOrDefaultAsync(model => model.UserId == userid)
-                    is NodeProcess model
-                        ? TypedResults.Ok(model)
-                        : TypedResults.NotFound();
-            })
-            .WithName("GetNodeProcessById")
-            .WithOpenApi();
-
-            group.MapPut("/{id}", async Task<Results<Ok, NotFound>> (string userid, NodeProcess nodeProcess, TwoDCellsDbContext db) =>
-            {
+                NodeProcess selectedNode = await db.NodeProcesses.Where(x => x.UserId == nodeProcess.UserId && x.NodeId == nodeProcess.NodeId).FirstOrDefaultAsync();
+                if(selectedNode != null && selectedNode.NodeScore > nodeProcess.NodeScore)
+                {
+                    return TypedResults.Ok();
+                }
                 var affected = await db.NodeProcesses
-                    .Where(model => model.UserId == userid)
+                    .Where(model => model.UserId == nodeProcess.UserId && model.NodeId == nodeProcess.NodeId)
                     .ExecuteUpdateAsync(setters => setters
                       .SetProperty(m => m.UserId, nodeProcess.UserId)
                       .SetProperty(m => m.NodeId, nodeProcess.NodeId)
                       .SetProperty(m => m.IsNodeFinish, nodeProcess.IsNodeFinish)
                       .SetProperty(m => m.NodeScore, nodeProcess.NodeScore)
                       );
-                return affected == 1 ? TypedResults.Ok() : TypedResults.NotFound();
-            })
-            .WithName("UpdateNodeProcess")
-            .WithOpenApi();
-
-            group.MapPost("/", async (NodeProcess nodeProcess, TwoDCellsDbContext db) =>
-            {
-                db.NodeProcesses.Add(nodeProcess);
-                await db.SaveChangesAsync();
-                return TypedResults.Created($"/api/NodeProcess/{nodeProcess.UserId}", nodeProcess);
+                if (affected != 1)
+                {
+                    db.NodeProcesses.Add(nodeProcess);
+                    await db.SaveChangesAsync();
+                }
+                //return TypedResults.Created($"/api/NodeProcess/{nodeProcess.UserId}", nodeProcess);
+                return TypedResults.Ok();
             })
             .WithName("CreateNodeProcess")
+            .RequireAuthorization()
             .WithOpenApi();
         }
     }

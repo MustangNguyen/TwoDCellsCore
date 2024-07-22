@@ -26,7 +26,10 @@ namespace TwoDCellCore.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<object>>> GetAllUsers()
         {
-            var users = _userManager.Users.ToList();
+            // Include NodeProcesses in the query to ensure they are loaded
+            var users = await _userManager.Users
+                .Include(user => user.NodeProcesses)
+                .ToListAsync();
 
             if (users == null || users.Count == 0)
             {
@@ -38,17 +41,25 @@ namespace TwoDCellCore.Controllers
                 Id = user.Id,
                 UserName = user.UserName,
                 Email = user.Email,
-                NodeProcesses = user.NodeProcesses
-                // Add more properties as needed
+                NodeProcesses = user.NodeProcesses.Select(np => new
+                {
+                    np.NodeId,
+                    np.IsNodeFinish,
+                    np.NodeScore
+                }).ToList()
             });
 
             return Ok(usersDto);
         }
         [Authorize]
         [HttpGet("{email}")]
-        public async Task<ActionResult<UserMutation>> GetUserMutation(string email)
+        public async Task<ActionResult<IEnumerable<object>>> GetUserInformation(string email)
         {
-            var users = _userManager.Users.Where(x=>x.Email == email).ToList();
+            //var users = _userManager.Users.Where(x=>x.Email == email).ToList();
+            var users = await _userManager.Users
+                .Where(x => x.Email == email)
+                .Include(user => user.NodeProcesses)
+                .ToListAsync();
 
             if (users == null || users.Count == 0)
             {
@@ -60,7 +71,12 @@ namespace TwoDCellCore.Controllers
                 Id = user.Id,
                 UserName = user.UserName,
                 Email = user.Email,
-                // Add more properties as needed
+                NodeProcesses = user.NodeProcesses.Select(np => new
+                {
+                    np.NodeId,
+                    np.IsNodeFinish,
+                    np.NodeScore
+                }).ToList()
             });
 
             return Ok(usersDto);
