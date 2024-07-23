@@ -17,19 +17,29 @@ namespace TwoDCellCore.Controllers
         {
             var group = routes.MapGroup("/api/NodeProcess").WithTags(nameof(NodeProcess));
 
-            group.MapGet("/", async (TwoDCellsDbContext db) =>
+            group.MapGet("/GetAllGameProcesses", async (TwoDCellsDbContext db) =>
             {
                 return await db.NodeProcesses.ToListAsync();
             })
-            .WithName("GetAllNodeProcesses")
+            .WithName("GetAllGameProcesses")
             .WithOpenApi();
 
-            group.MapPost("/", async (NodeProcess nodeProcess, TwoDCellsDbContext db) =>
+            group.MapPost("/UpdateUserGameProcess", async (NodeProcess nodeProcess, TwoDCellsDbContext db) =>
             {
                 NodeProcess selectedNode = await db.NodeProcesses.Where(x => x.UserId == nodeProcess.UserId && x.NodeId == nodeProcess.NodeId).FirstOrDefaultAsync();
                 if(selectedNode != null && selectedNode.NodeScore > nodeProcess.NodeScore)
                 {
-                    return TypedResults.Ok();
+                    if (selectedNode.IsNodeFinish == false && nodeProcess.IsNodeFinish == true)
+                    {
+                        nodeProcess.IsNodeFinish = true;
+                        nodeProcess.NodeScore = selectedNode.NodeScore;
+                    }
+                    else
+                        return Results.Ok(selectedNode);
+                }
+                if(selectedNode != null && selectedNode.NodeScore < nodeProcess.NodeScore && selectedNode.IsNodeFinish == true && nodeProcess.IsNodeFinish == false)
+                {
+                    nodeProcess.IsNodeFinish = true;
                 }
                 var affected = await db.NodeProcesses
                     .Where(model => model.UserId == nodeProcess.UserId && model.NodeId == nodeProcess.NodeId)
@@ -45,9 +55,9 @@ namespace TwoDCellCore.Controllers
                     await db.SaveChangesAsync();
                 }
                 //return TypedResults.Created($"/api/NodeProcess/{nodeProcess.UserId}", nodeProcess);
-                return TypedResults.Ok();
+                return TypedResults.Ok(nodeProcess);
             })
-            .WithName("CreateNodeProcess")
+            .WithName("UpdateUserGameProcess")
             .RequireAuthorization()
             .WithOpenApi();
         }
