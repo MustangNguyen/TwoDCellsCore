@@ -37,7 +37,7 @@ namespace TwoDCellCore.Controllers
                     else
                         return Results.Ok(selectedNode);
                 }
-                if(selectedNode != null && selectedNode.NodeScore < nodeProcess.NodeScore && selectedNode.IsNodeFinish == true && nodeProcess.IsNodeFinish == false)
+                if(selectedNode != null && selectedNode.IsNodeFinish == true)
                 {
                     nodeProcess.IsNodeFinish = true;
                 }
