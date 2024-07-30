@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.OpenApi;
 
 namespace TwoDCellCore.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UserGunsController : ControllerBase
@@ -28,10 +27,9 @@ namespace TwoDCellCore.Controllers
 
     public static class UserGunEndpoints
     {
-        [Authorize]
         public static void MapUserGunEndpoints(this IEndpointRouteBuilder routes)
         {
-            var group = routes.MapGroup("/api/UserGun").WithTags(nameof(UserGun)).RequireAuthorization();
+            var group = routes.MapGroup("/api/UserGun").WithTags(nameof(UserGun));
             group.MapGet("/", async (TwoDCellsDbContext db) =>
             {
                 return await db.UserGuns.ToListAsync();
@@ -49,6 +47,7 @@ namespace TwoDCellCore.Controllers
                 return Results.Ok(listUserGun);
             })
             .WithName("GetUserGunList")
+            .RequireAuthorization()
             .WithOpenApi();
 
             //group.MapPut("/{id}", async Task<Results<Ok, NotFound>> (string ownershipid, UserGun userGun, TwoDCellsDbContext db) =>
@@ -89,6 +88,7 @@ namespace TwoDCellCore.Controllers
                 return TypedResults.Created($"/api/UserGun/{userGun.OwnershipId}", userGun);
             })
             .WithName("CreateUserGun")
+            .RequireAuthorization()
             .WithOpenApi();
 
             group.MapPost("/UpgradeGun/", async (UpgradeUserGun upgradeUserGun, TwoDCellsDbContext db) =>
@@ -110,6 +110,7 @@ namespace TwoDCellCore.Controllers
                 return affected == 1 ? Results.Ok(userGun) : Results.NotFound();
             })
             .WithName("UpgradeUserGun")
+            .RequireAuthorization()
             .WithOpenApi();
 
             //group.MapDelete("/{id}", async Task<Results<Ok, NotFound>> (string ownershipid, TwoDCellsDbContext db) =>

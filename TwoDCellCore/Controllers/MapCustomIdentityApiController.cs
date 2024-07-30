@@ -85,7 +85,7 @@ public static class IdentityApiEndpointRouteBuilderExtensions
             }
 
             await SendConfirmationEmailAsync(user, userManager, context, email);
-            await CreateNewLoadOut(email, sp);
+            await CreateNewItemWithPlayer(email, sp);
             return TypedResults.Ok();
         });
 
@@ -425,7 +425,7 @@ public static class IdentityApiEndpointRouteBuilderExtensions
         //    userEquipment.UserEquipmentId = userEquipment.UserId + 0;
         //    var newUser = users.Users.Where(x => x.Email == email).ToList();
         //}
-        async Task CreateNewLoadOut(string email, IServiceProvider serviceProvider)
+        async Task CreateNewItemWithPlayer(string email, IServiceProvider serviceProvider)
         {
             using (var scope = serviceProvider.CreateScope())
             {
@@ -436,12 +436,39 @@ public static class IdentityApiEndpointRouteBuilderExtensions
                 {
                     var userEquipment = new UserEquipment
                     {
-                        UserEquipmentId = newUser.Id + "0",
+                        UserEquipmentId = newUser.Id + "LoadOut" + "0",
                         UserId = newUser.Id
                     };
                     dbContext.UserEquipment.Add(userEquipment);
+                    var userGun1 = new UserGun
+                    {
+                        OwnershipId = newUser.Id + "GHEM_001" + "0",
+                        UserId = newUser.Id,
+                        GunId = "GHEM_001",
+                        GunLv = 0,
+                        GunXp = 0,
+                    };
+                    var userGun2 = new UserGun
+                    {
+                        OwnershipId = newUser.Id + "GHEM_001" + "1",
+                        UserId = newUser.Id,
+                        GunId = "GHEM_001",
+                        GunLv = 0,
+                        GunXp = 0,
+                    };
+                    dbContext.UserGuns.Add(userGun1);
+                    dbContext.UserGuns.Add(userGun2);
+                    var initialNode = new NodeProcess
+                    {
+                        UserId = newUser.Id,
+                        NodeId = "1_1",
+                        IsNodeFinish = false,
+                        NodeScore = 0,
+                    };
+                    dbContext.NodeProcesses.Add(initialNode);
                     await dbContext.SaveChangesAsync();
                 }
+
             }
         }
 

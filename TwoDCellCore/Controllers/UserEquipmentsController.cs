@@ -64,7 +64,7 @@ public static class UserEquipmentEndpoints
             while (existingUserEquipment != null)
             {
                 count++;
-                userEquipment.UserEquipmentId = userEquipment.UserId + count;
+                userEquipment.UserEquipmentId = userEquipment.UserId + "LoadOut" + count;
                 existingUserEquipment = await db.UserEquipment.FirstOrDefaultAsync(u => u.UserEquipmentId == userEquipment.UserEquipmentId);
             }
             db.UserEquipment.Add(userEquipment);
