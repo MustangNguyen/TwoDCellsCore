@@ -434,12 +434,14 @@ public static class IdentityApiEndpointRouteBuilderExtensions
                 var newUser = await dbContext.Users.FirstOrDefaultAsync(x => x.Email == email);
                 if (newUser != null)
                 {
-                    var userEquipment = new UserEquipment
+                    var userMutation = new UserMutation
                     {
-                        UserEquipmentId = newUser.Id + "LoadOut" + "0",
-                        UserId = newUser.Id
+                        OwnershipId = newUser.Id + "HEM_JAGUAR" + "0",
+                        UserId = newUser.Id,
+                        MutationId = "HEM_JAGUAR",
+                        MutationLv = 0,
+                        MutationXp = 0,
                     };
-                    dbContext.UserEquipment.Add(userEquipment);
                     var userGun1 = new UserGun
                     {
                         OwnershipId = newUser.Id + "GHEM_001" + "0",
@@ -458,6 +460,7 @@ public static class IdentityApiEndpointRouteBuilderExtensions
                     };
                     dbContext.UserGuns.Add(userGun1);
                     dbContext.UserGuns.Add(userGun2);
+                    dbContext.UserMutations.Add(userMutation);
                     var initialNode = new NodeProcess
                     {
                         UserId = newUser.Id,
@@ -466,6 +469,16 @@ public static class IdentityApiEndpointRouteBuilderExtensions
                         NodeScore = 0,
                     };
                     dbContext.NodeProcesses.Add(initialNode);
+                    await dbContext.SaveChangesAsync();
+                    var userEquipment = new UserEquipment
+                    {
+                        UserEquipmentId = newUser.Id + "LoadOut" + "0",
+                        UserId = newUser.Id,
+                        MutationOwnershipId = newUser.Id + "HEM_JAGUAR" + "0",
+                        GunOwnershipId1 = newUser.Id + "GHEM_001" + "0",
+                        GunOwnershipId2 = newUser.Id + "GHEM_001" + "1",
+                    };
+                    dbContext.UserEquipment.Add(userEquipment);
                     await dbContext.SaveChangesAsync();
                 }
 
