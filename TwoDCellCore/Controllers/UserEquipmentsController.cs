@@ -77,10 +77,11 @@ public static class UserEquipmentEndpoints
 
         group.MapPost("/UpdateUserEquipment/", async (UpdateUserEquipment updateUserEquipment, TwoDCellsDbContext db) =>
         {
-            if(updateUserEquipment.GunOwnershipId1 == updateUserEquipment.GunOwnershipId2)
-            {
-                return Results.BadRequest("Update player's equipment failed");
-            }
+            if(updateUserEquipment.GunOwnershipId1!=null&& updateUserEquipment.GunOwnershipId2!=null)
+                if(updateUserEquipment.GunOwnershipId1 == updateUserEquipment.GunOwnershipId2)
+                {
+                    return Results.BadRequest("Update player's equipment failed");
+                }
             var affected = await db.UserEquipment
                 .Where(model => model.UserEquipmentId == updateUserEquipment.UserEquipmentId)
                 .ExecuteUpdateAsync(setters => setters
