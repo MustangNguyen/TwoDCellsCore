@@ -35,7 +35,12 @@ namespace TwoDCellCore.Controllers
                     userName = db.Users.Where(x => x.Id == rank.UserId).Select(x=>x.UserName).FirstOrDefault(),
                     score = rank.NodeScore
                 }).ToList();
-                return Results.Ok(leaderboardList);
+
+                return Results.Ok(new
+                {
+                    nodeId = nodeId,
+                    leaderboardList = leaderboardList
+                });
             })
             .WithName("GetNodeLeaderboard")
             .WithOpenApi();
