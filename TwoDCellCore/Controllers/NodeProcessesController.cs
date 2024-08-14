@@ -24,9 +24,25 @@ namespace TwoDCellCore.Controllers
             .WithName("GetAllGameProcesses")
             .WithOpenApi();
 
+            group.MapGet("/GetNodeLeaderboard", async (string nodeId,TwoDCellsDbContext db) =>
+            {
+                var leaderboard = await db.NodeProcesses
+                    .Where(s => s.NodeId == nodeId)
+                    .OrderByDescending(s => s.NodeScore) 
+                    .ToListAsync();
+                var leaderboardList = leaderboard.Select(rank => new
+                {
+                    userName = db.Users.Where(x => x.Id == rank.UserId).Select(x=>x.UserName).FirstOrDefault(),
+                    score = rank.NodeScore
+                }).ToList();
+                return Results.Ok(leaderboardList);
+            })
+            .WithName("GetNodeLeaderboard")
+            .WithOpenApi();
+
             group.MapPost("/UpdateUserGameProcess", async (NodeProcess nodeProcess, TwoDCellsDbContext db) =>
             {
-                NodeProcess selectedNode = await db.NodeProcesses.Where(x => x.UserId == nodeProcess.UserId && x.NodeId == nodeProcess.NodeId).FirstOrDefaultAsync();
+                NodeProcess? selectedNode = await db.NodeProcesses.Where(x => x.UserId == nodeProcess.UserId && x.NodeId == nodeProcess.NodeId).FirstOrDefaultAsync();
                 if(selectedNode != null && selectedNode.NodeScore > nodeProcess.NodeScore)
                 {
                     if (selectedNode.IsNodeFinish == false && nodeProcess.IsNodeFinish == true)
@@ -62,4 +78,9 @@ namespace TwoDCellCore.Controllers
             .WithOpenApi();
         }
     }
+}
+public class LeaderboardItem
+{
+    public string userName = null!;
+    public int? score = 0;
 }
